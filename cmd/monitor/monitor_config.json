@@ -1,0 +1,54 @@
+{
+    "monitor": [
+        {
+            "height": 5,
+            "charts": [
+                {
+                    "title": "total CPU Load",
+                    "frequency": 1,
+                    "command": "top -bn1 | grep load | awk '{printf \"%f\", $(NF-2)/8}'",
+                    "delimiter": "\t",
+                    "plotSpec": "G"
+                }
+            ]
+        },
+        {
+            "height": 0,
+            "charts": [
+                {
+                    "title": "CPU 1-2",
+                    "frequency": 1,
+                    "command": "top -bn1 -1 | awk -F \",\" 'NR==3,NR==4{printf \"%f\t\", 100-$4}'",
+                    "delimiter": "\t",
+                    "plotSpec": "L."
+                },
+                {
+                    "title": "CPU 3-4",
+                    "frequency": 1,
+                    "command": "top -bn1 -1 | awk -F \",\" 'NR==4,NR==5{printf \"%f\t\", 100-$4}'",
+                    "delimiter": "\t",
+                    "plotSpec": "L."
+                },
+                {
+                    "title": "CPU 5-8",
+                    "frequency": 1,
+                    "command": "top -bn1 -1 | awk -F \",\" 'NR==7,NR==10{printf \"%f\t\", 100-$4}'",
+                    "delimiter": "\t",
+                    "plotSpec": "L..."
+                }
+            ]
+        },
+        {
+            "height": 0,
+            "charts": [
+                {
+                    "title": "Memory/Swap Space",
+                    "frequency": 1,
+                    "command": "free -m | awk 'NR==2,NR==3{printf \"%f\t\", $3/$2 }'",
+                    "delimiter": "\t",
+                    "plotSpec": "L."
+                }
+            ]
+        }
+    ]
+}

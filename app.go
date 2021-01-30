@@ -4,35 +4,31 @@ import (
 	"errors"
 
 	"github.com/nsf/termbox-go"
+	ui "github.com/s-westphal/termui/v3"
 )
 
-// App app
-type App struct {
-	*vContainer
-	panels []panel
+func GetDefaultChartColors() []ui.Color {
+	return []ui.Color{ui.ColorRed, ui.ColorGreen, ui.ColorYellow, ui.ColorBlue, ui.ColorCyan}
 }
 
-// NewApp new app
+type App struct {
+	*vContainer
+	panels  []panel
+	widgets []Widget
+}
+
 func NewApp() *App {
 	return &App{
 		vContainer: newVContainer(),
 		panels:     []panel{},
+		widgets:    []Widget{},
 	}
 }
 
-// AddPanel add panel to app
 func (app *App) AddPanel(panelType string, storages []*Storage) error {
-	var widget widget
-	switch panelType {
-	case "L":
-		widget = NewLineChartWidget("Line Chart", storages, getChartColors())
-	case "S":
-		if len(storages) != 2 {
-			return errors.New("scatter plot needs 2 columns")
-		}
-		widget = NewScatterPlotWidget("Scatter Plot", storages)
-	case "P":
-		widget = NewPieChartWidget("Pie Chart", storages, getChartColors())
+	widget, err := CreateWidget(panelType, "", storages)
+	if err != nil {
+		panic(err)
 	}
 	var panel = newPanel(storages, widget)
 
@@ -41,12 +37,24 @@ func (app *App) AddPanel(panelType string, storages []*Storage) error {
 	return nil
 }
 
-// AddInstructions add instractions
 func (app *App) AddInstructions() {
 	instructionsWidget := newInstructionsWidget("")
 	instructionsContainer := newHContainer(instructionsWidget)
 	instructionsContainer.setHeight(3)
 	app.vContainer.putContainers(instructionsContainer)
+}
+
+func (app *App) AddWidgetRow(widgets []Widget, height int) {
+	rowContainer := newHContainer()
+	for _, w := range widgets {
+		chartContainer := newVContainer(w)
+		rowContainer.putContainers(chartContainer)
+	}
+	app.widgets = append(app.widgets, widgets...)
+	if height != 0 {
+		rowContainer.setHeight(height)
+	}
+	app.vContainer.putContainers(rowContainer)
 }
 
 // Update update panels
@@ -55,6 +63,9 @@ func (app *App) Update() {
 	for _, panel := range app.panels {
 		panel.update()
 
+	}
+	for _, widget := range app.widgets {
+		widget.update()
 	}
 	w, h := termbox.Size()
 
@@ -68,4 +79,36 @@ func (app *App) Render() {
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
 	app.vContainer.render(0, 0, w, h)
 	termbox.Flush()
+}
+
+func CreateWidget(widgetType string, title string, storages []*Storage) (Widget, error) {
+	var widget Widget
+	switch widgetType {
+	case "L":
+		if title == "" {
+			title = "Line Chart"
+		}
+		widget = NewLineChartWidget(title, storages, GetDefaultChartColors())
+	case "S":
+		if len(storages) != 2 {
+			return nil, errors.New("scatter plot needs 2 columns")
+		}
+		if title == "" {
+			title = "Scatter Plot"
+		}
+		widget = NewScatterPlotWidget(title, storages)
+	case "P":
+		if title == "" {
+			title = "Pie Chart"
+		}
+		widget = NewPieChartWidget(title, storages, GetDefaultChartColors())
+	case "G":
+		if len(storages) != 1 {
+			return nil, errors.New("gauge needs 1 column")
+		}
+
+		widget = NewGaugeWidget(title, storages[0], GetDefaultChartColors())
+	}
+	return widget, nil
+
 }

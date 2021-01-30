@@ -133,11 +133,12 @@ func main() {
 		}
 
 		var bufferSize int
-		if currentPanelType == "L" {
+		switch currentPanelType {
+		case "L":
 			bufferSize = bufferSizeLine
-		} else if currentPanelType == "S" {
+		case "S":
 			bufferSize = *bufferSizeScatter
-		} else if currentPanelType == "P" {
+		case "P", "G":
 			bufferSize = 1
 		}
 		columnStorages[i] = tchart.NewStorage(title, bufferSize, histogramBinCount)

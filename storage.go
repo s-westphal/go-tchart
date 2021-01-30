@@ -6,7 +6,6 @@ import (
 	"github.com/VividCortex/gohistogram"
 )
 
-// Storage Store data
 type Storage struct {
 	title      string
 	DataLabels *RingBuffer
@@ -19,7 +18,6 @@ type Storage struct {
 	Count      int
 }
 
-// NewStorage create new Storage
 func NewStorage(title string, bufsize int, histogramBinCount int) *Storage {
 	storage := &Storage{
 		title:      title,
@@ -35,7 +33,12 @@ func NewStorage(title string, bufsize int, histogramBinCount int) *Storage {
 	return storage
 }
 
-// Add add element to storage
+func (storage *Storage) SetBuffersize(bufsize int) {
+	storage.DataLabels = NewRingBuffer(bufsize)
+	storage.Data = NewRingBuffer(bufsize)
+
+}
+
 func (storage *Storage) Add(x float64, dataLabel string) {
 	storage.Data.Add(x)
 	storage.Histogram.Add(x)

@@ -1,7 +1,5 @@
 package tchart
 
-import ui "github.com/s-westphal/termui/v3"
-
 // panel parameters
 const (
 	dataListWidth = 31
@@ -11,18 +9,14 @@ type panel struct {
 	container *hContainer
 	stats     []*statsWidget
 	barCharts []*barChartWidget
-	widget    widget
+	widget    Widget
 }
 
-func getChartColors() []ui.Color {
-	return []ui.Color{ui.ColorRed, ui.ColorGreen, ui.ColorYellow, ui.ColorBlue, ui.ColorCyan}
-}
-
-func newPanel(storages []*Storage, widget widget) *panel {
+func newPanel(storages []*Storage, widget Widget) *panel {
 	container := &hContainer{}
 	stats := make([]*statsWidget, len(storages))
 	barCharts := make([]*barChartWidget, len(storages))
-	colors := getChartColors()
+	colors := GetDefaultChartColors()
 	for i, storage := range storages {
 		frame := newFrameWidget(storage.title, colors[i])
 		dataStatsContainer := newVContainer(frame)

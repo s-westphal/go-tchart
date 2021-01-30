@@ -2,7 +2,7 @@ package tchart
 
 import "github.com/s-westphal/termui/v3"
 
-type widget interface {
+type Widget interface {
 	setDimension(x, y, w, h int)
 	Buffer() (*termui.Buffer, error)
 	update()

@@ -36,7 +36,7 @@ func (bb *containerBase) setHeight(h int) {
 type layoutContainer struct {
 	containerBase
 	innerContainers []container
-	widgets         []widget
+	widgets         []Widget
 }
 
 func (lb *layoutContainer) putContainers(containers ...container) {
@@ -75,11 +75,15 @@ type vContainer struct {
 	layoutContainer
 }
 
-func newVContainer(widgets ...widget) *vContainer {
+func newVContainer(widgets ...Widget) *vContainer {
 	vb := &vContainer{}
 	vb.innerContainers = []container{}
 	vb.widgets = widgets
 	return vb
+}
+
+func (vb *vContainer) addWidgets(widgets ...Widget) {
+	vb.widgets = widgets
 }
 
 func (vb *vContainer) render(x, y, w, h int) {
@@ -115,11 +119,15 @@ type hContainer struct {
 	layoutContainer
 }
 
-func newHContainer(widgets ...widget) *hContainer {
+func newHContainer(widgets ...Widget) *hContainer {
 	hb := &hContainer{}
 	hb.innerContainers = []container{}
 	hb.widgets = widgets
 	return hb
+}
+
+func (hb *hContainer) addWidgets(widgets ...Widget) {
+	hb.widgets = widgets
 }
 
 func (hb *hContainer) render(x, y, w, h int) {
