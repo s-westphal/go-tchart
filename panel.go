@@ -21,10 +21,10 @@ func newPanel(storages []*Storage, widget Widget) *panel {
 		frame := newFrameWidget(storage.title, colors[i])
 		dataStatsContainer := newVContainer(frame)
 		dataStatsContainer.setWidth(dataListWidth)
-		statsWidget := newStatsWidget(storage, "")
+		statsWidget := NewStatsWidget("", storage)
 		statsContainer := newHContainer(statsWidget)
 		stats[i] = statsWidget
-		barChartWidget := newBarChartWidget(storage, "", 7)
+		barChartWidget := NewBarChartWidget("", storage, 7)
 		barChartContainer := newHContainer(barChartWidget)
 		barCharts[i] = barChartWidget
 		dataStatsContainer.putContainers(statsContainer, barChartContainer)

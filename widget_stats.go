@@ -13,7 +13,7 @@ type statsWidget struct {
 	storage *Storage
 }
 
-func newStatsWidget(storage *Storage, title string) *statsWidget {
+func NewStatsWidget(title string, storage *Storage) *statsWidget {
 	list := widgets.NewList()
 	list.Title = title
 	list.Border = false

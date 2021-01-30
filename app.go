@@ -25,8 +25,8 @@ func NewApp() *App {
 	}
 }
 
-func (app *App) AddPanel(panelType string, storages []*Storage) error {
-	widget, err := CreateWidget(panelType, "", storages)
+func (app *App) AddPanel(widgetType string, storages []*Storage) error {
+	widget, err := CreateWidget(widgetType, "", storages)
 	if err != nil {
 		panic(err)
 	}
@@ -108,6 +108,15 @@ func CreateWidget(widgetType string, title string, storages []*Storage) (Widget,
 		}
 
 		widget = NewGaugeWidget(title, storages[0], GetDefaultChartColors())
+
+	case "B":
+		if len(storages) != 1 {
+			return nil, errors.New("barchart needs 1 column")
+		}
+		if title == "" {
+			title = "Bar Chart"
+		}
+		widget = NewBarChartWidget(title, storages[0], 10)
 	}
 	return widget, nil
 

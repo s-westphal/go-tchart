@@ -142,7 +142,6 @@ func (ie *IntervalExecuter) addEvaluation() {
 			fmt.Println(err.Error())
 			continue
 		}
-		// fmt.Println(value)
 		ie.storages[i].Add(value, label)
 
 	}
@@ -160,12 +159,15 @@ func main() {
 	app := tchart.NewApp()
 
 	conf := parseJSON(*config)
+	var dataStorages []*tchart.Storage
+	var numChartColumns int
+	var chartType string
 	for _, row := range conf["monitor"] {
 		widgets := make([]tchart.Widget, 0, len(row.Entries))
 		for _, chart := range row.Entries {
-			chartType := string(chart.PlotSpec[0])
-			numChartColumns := len(chart.PlotSpec)
-			dataStorages := make([]*tchart.Storage, numChartColumns)
+			chartType = string(chart.PlotSpec[0])
+			numChartColumns = len(chart.PlotSpec)
+			dataStorages = make([]*tchart.Storage, numChartColumns)
 
 			var bufferSize int
 			switch chartType {
@@ -173,7 +175,7 @@ func main() {
 				bufferSize = bufferSizeLine
 			case "S":
 				bufferSize = bufferSizeScatter
-			case "P", "G":
+			case "P", "G", "B":
 				bufferSize = 1
 			}
 

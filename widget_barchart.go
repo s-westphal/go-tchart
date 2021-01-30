@@ -15,7 +15,7 @@ type barChartWidget struct {
 	numBins  int
 }
 
-func newBarChartWidget(storage *Storage, title string, numBins int) *barChartWidget {
+func NewBarChartWidget(title string, storage *Storage, numBins int) *barChartWidget {
 	bc := widgets.NewBarChart()
 	bc.Title = title
 	bc.BarColors = []ui.Color{ui.ColorWhite}
