@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -10,7 +11,6 @@ import (
 	"time"
 
 	"github.com/s-westphal/go-tchart"
-	cli "gopkg.in/alecthomas/kingpin.v2"
 
 	"github.com/andrew-d/go-termutil"
 	"github.com/nsf/termbox-go"
@@ -28,13 +28,15 @@ const (
 )
 
 var (
-	delimiter = cli.Flag(
+	delimiter = flag.String(
 		"delimiter",
+		"\t",
 		"Delimiter of input",
-	).Short('d').Default("\t").String()
+	)
 
-	panelTypes = cli.Flag(
+	panelTypes = flag.String(
 		"panels",
+		"",
 		"Panel type of each column ("+
 			"'L': line chart, "+
 			"'S': scatter plot, "+
@@ -42,22 +44,25 @@ var (
 			"'.': add to previous panel, "+
 			"'x': skip column"+
 			")",
-	).Short('p').String()
+	)
 
-	dataLabelMode = cli.Flag(
+	dataLabelMode = flag.String(
 		"data-label",
+		"None",
 		"Data labels used by line chart (None, first, time)",
-	).Short('l').Default("None").String()
+	)
 
-	dataSpeed = cli.Flag(
+	dataSpeed = flag.String(
 		"speed",
+		"medium",
 		"Speed at which to scroll though the data (slow, medium, fast)",
-	).Short('s').Default("medium").String()
+	)
 
-	bufferSizeScatter = cli.Flag(
+	bufferSizeScatter = flag.Int(
 		"num-samples",
+		defaultBufferSizeScatter,
 		"Number of samples displayed in scatter plot",
-	).Short('n').Default(fmt.Sprintf("%v", defaultBufferSizeScatter)).Int()
+	)
 )
 
 func storeRecords(storages []*tchart.Storage, dataLabelMode string, records [][]string) {
@@ -83,7 +88,7 @@ func storeRecords(storages []*tchart.Storage, dataLabelMode string, records [][]
 
 func main() {
 
-	cli.Parse()
+	flag.Parse()
 
 	var reader *csv.Reader
 	if !termutil.Isatty(os.Stdin.Fd()) {

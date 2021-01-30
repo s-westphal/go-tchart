@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -14,7 +15,6 @@ import (
 	"github.com/nsf/termbox-go"
 	tchart "github.com/s-westphal/go-tchart"
 	ui "github.com/s-westphal/termui/v3"
-	cli "gopkg.in/alecthomas/kingpin.v2"
 )
 
 const (
@@ -25,10 +25,11 @@ const (
 )
 
 var (
-	config = cli.Flag(
+	config = flag.String(
 		"config",
+		default_config,
 		"path to config file",
-	).Short('c').Default(default_config).String()
+	)
 )
 
 type chartEntry struct {
@@ -148,7 +149,7 @@ func (ie *IntervalExecuter) addEvaluation() {
 }
 
 func main() {
-	cli.Parse()
+	flag.Parse()
 
 	err := ui.Init()
 	if err != nil {
